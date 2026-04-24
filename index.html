@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Implementation Cost Calculator</title>
+    <title>AI Implementation Cost Calculator - Autonomous Support Notes</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
@@ -22,7 +22,7 @@
             text-align: center;
         }
         .header h1 { font-size: 36px; margin-bottom: 0.5rem; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .header p { font-size: 16px; opacity: 0.95; }
+        .header p { font-size: 14px; opacity: 0.95; margin: 0.5rem 0; }
         .section { padding: 2.5rem; border-bottom: 2px solid #f0f0f0; }
         .section:nth-child(even) { background: linear-gradient(to right, #f8f9ff, #fff5f8); }
         .section:last-child { border-bottom: none; }
@@ -69,24 +69,7 @@
             border-color: #f093fb;
             box-shadow: 0 0 0 4px rgba(240, 147, 251, 0.2);
         }
-        .form-group select { 
-            padding: 0.75rem; 
-            border: 2px solid #667eea; 
-            border-radius: 8px; 
-            font-size: 14px;
-            font-weight: 600;
-            background: linear-gradient(to right, #f8f9ff, white); 
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .form-group select:focus {
-            outline: none;
-            border-color: #f093fb;
-            box-shadow: 0 0 0 4px rgba(240, 147, 251, 0.2);
-        }
         .form-group small { font-size: 12px; color: #666; margin-top: 0.5rem; font-style: italic; }
-        .slider-container { display: flex; gap: 0.75rem; align-items: center; }
-        .slider-container input { flex: 1; }
         .slider-value { 
             font-size: 13px; 
             font-weight: 800; 
@@ -121,12 +104,12 @@
             box-shadow: 0 12px 30px rgba(102, 126, 234, 0.2);
             border-color: #667eea;
         }
-        .metric-card.highlight { 
-            border-color: #ff6b9d;
-            background: linear-gradient(135deg, #fff5f7, #ffe8f0);
+        .metric-card.onetime {
+            border-color: #ffc107;
+            background: linear-gradient(135deg, #fff9e6, #fffbf0);
         }
-        .metric-card.highlight::before {
-            background: linear-gradient(90deg, #ff6b9d, #ff4757);
+        .metric-card.onetime::before {
+            background: linear-gradient(90deg, #ffc107, #ff9800);
         }
         .metric-label { 
             font-size: 11px; 
@@ -136,6 +119,9 @@
             text-transform: uppercase; 
             letter-spacing: 1.5px; 
         }
+        .metric-card.onetime .metric-label {
+            color: #ff9800;
+        }
         .metric-value { 
             font-size: 26px; 
             font-weight: 800; 
@@ -144,8 +130,8 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        .metric-card.highlight .metric-value { 
-            background: linear-gradient(135deg, #ff6b9d 0%, #ff4757 100%);
+        .metric-card.onetime .metric-value {
+            background: linear-gradient(135deg, #ff9800 0%, #ffc107 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -156,8 +142,15 @@
         th:first-child { text-align: left; }
         td { padding: 0.95rem 0.75rem; text-align: right; border-bottom: 2px solid #f0f0f0; }
         td:first-child { text-align: left; color: #333; font-weight: 700; }
-        tbody tr { transition: all 0.2s; }
         tbody tr:hover { background: linear-gradient(to right, #f8f9ff, #fff5f8); }
+        .onetime-row {
+            background: linear-gradient(135deg, #fff9e6 0%, #fffbf0 100%);
+            font-weight: 800;
+            border-top: 3px solid #ff9800;
+        }
+        .onetime-row td {
+            color: #ff9800;
+        }
         .total-row { 
             background: linear-gradient(135deg, #f8f9ff 0%, #fff5f8 100%); 
             font-weight: 800; 
@@ -181,28 +174,14 @@
         .notes ul { list-style: none; padding-left: 0; }
         .notes li { margin-bottom: 0.8rem; padding-left: 2rem; position: relative; }
         .notes li:before { content: "✓"; position: absolute; left: 0; color: #ffeb3b; font-weight: bold; font-size: 16px; }
-        .growth-rates-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
-        .category-badge {
-            display: inline-block;
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            margin-top: 0.5rem;
-        }
-        .badge-infrastructure { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-        .badge-software { background: linear-gradient(135deg, #f093fb, #f5576c); color: white; }
-        .badge-data { background: linear-gradient(135deg, #4facfe, #00f2fe); color: white; }
-        .badge-talent { background: linear-gradient(135deg, #43e97b, #38f9d7); color: white; }
-        .badge-integration { background: linear-gradient(135deg, #fa709a, #fee140); color: white; }
-        .badge-governance { background: linear-gradient(135deg, #30cfd0, #330867); color: white; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>💰 AI Implementation Cost Model</h1>
-            <p>Interactive 5-year total cost of ownership calculator with per-user metrics</p>
+            <h1>💰 Autonomous Support Note Generation Cost Model</h1>
+            <p>Based on: 100-user AI implementation budget analysis (Feb 2026)</p>
+            <p style="font-size: 12px; opacity: 0.9;">Scalable model for communications AI projects</p>
         </div>
 
         <div class="section">
@@ -211,34 +190,20 @@
                 <div class="form-group">
                     <label>👥 Number of Users</label>
                     <input type="number" id="numberOfUsers" min="1" value="100" />
-                    <small>Total users in scope (base = 100 users)</small>
+                    <small>Scale from 1 to 1000+ users</small>
                 </div>
 
                 <div class="form-group">
-                    <label>📈 Deployment Scale: <span id="deploymentScaleValue">100</span>%</label>
-                    <input type="range" id="deploymentScale" min="25" max="200" value="100" />
-                    <small>Full deployment at 100%, pilot at 50%</small>
+                    <label>⚡ Year 1 Build Cost (Base)</label>
+                    <input type="number" id="buildCost" min="0" value="60160" />
+                    <small>One-time AI/ML engineering & setup</small>
                 </div>
 
                 <div class="form-group">
-                    <label>📁 Data Readiness: <span id="dataReadinessValue">70</span>%</label>
-                    <input type="range" id="dataReadiness" min="30" max="100" value="70" />
-                    <small>Quality & availability of source data</small>
+                    <label>📁 Data Volume: MB/day per User</label>
+                    <input type="number" id="dataPerUser" min="1" value="5" />
+                    <small>Communications data per user daily</small>
                 </div>
-
-                <div class="form-group">
-                    <label>👔 Staffing Level</label>
-                    <select id="staffingLevel">
-                        <option value="low">Low (minimal in-house)</option>
-                        <option value="medium" selected>Medium (balanced team)</option>
-                        <option value="high">High (dedicated team)</option>
-                    </select>
-                </div>
-            </div>
-
-            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e0e0e0;">
-                <div class="section-title">📉 Growth Rates (Year-over-Year)</div>
-                <div class="growth-rates-grid" id="growthRatesGrid"></div>
             </div>
         </div>
 
@@ -248,18 +213,18 @@
         </div>
 
         <div class="section">
-            <div class="section-title">📋 5-Year Cost Breakdown by Category</div>
+            <div class="section-title">📋 5-Year Cost Breakdown</div>
             <div style="overflow-x: auto;">
                 <table id="costTable">
                     <thead>
                         <tr>
-                            <th>Category</th>
+                            <th>Cost Category</th>
                             <th>Year 1</th>
                             <th>Year 2</th>
                             <th>Year 3</th>
                             <th>Year 4</th>
                             <th>Year 5</th>
-                            <th>Total</th>
+                            <th>5-Yr Total</th>
                         </tr>
                     </thead>
                     <tbody id="costTableBody"></tbody>
@@ -269,119 +234,78 @@
 
         <div class="section">
             <div class="notes">
-                <strong>⚠️ Important Notes & Assumptions</strong>
+                <strong>📋 Cost Model Details (from document analysis)</strong>
                 <ul>
-                    <li>Costs scale based on number of users (baseline = 100 users)</li>
-                    <li>Scaling factors vary by category (Infrastructure 0.8x, Software 1.0x, Talent 0.5x, etc.)</li>
-                    <li>These costs are estimates based on industry benchmarks and should be validated with actual vendor quotes</li>
-                    <li>Growth rates reflect typical scaling patterns; adjust based on your organization's specific roadmap</li>
-                    <li>Cost per user is calculated as average annual cost divided by number of users</li>
-                    <li>Infrastructure costs scale with deployment size; data management includes tools, storage, and governance</li>
-                    <li>Talent costs include hiring, training, and external consulting; adjust staffing level to model different scenarios</li>
-                    <li>Final budget should include 15-20% contingency buffer for unexpected costs</li>
+                    <li><strong>Human Labor (64% of spend):</strong> Y1 build = $60,160; ongoing Y2+ = $35,880/yr with 3% annual increase</li>
+                    <li><strong>Cloud Infrastructure (6% of spend):</strong> AWS ECS containers, RDS, ALB, monitoring = $4,218/yr baseline with 5% annual increase</li>
+                    <li><strong>Data & Storage (12% of spend):</strong> Vector database (Pinecone) $8,400/yr + S3 storage scaling with corpus growth</li>
+                    <li><strong>LLM API Costs (<1% of spend):</strong> ~$267/yr for Claude Haiku + Sonnet with optimizations; ~$3,336/yr heavy transcript scenario</li>
+                    <li><strong>Contingency:</strong> Year 1 = 15% of budget; Years 2-5 = 13% (covers scope changes, rework, inflation)</li>
+                    <li>Costs scale sub-linearly with users for labor; linearly for API/storage. Infrastructure shows economy of scale at 100+ users.</li>
                 </ul>
             </div>
         </div>
     </div>
 
     <script>
-        const baseYearCosts = {
-            'Infrastructure & Compute': { base: 250000, scaling: 'deploymentScale', userScaling: 0.8, badge: 'badge-infrastructure' },
-            'Software & Licensing': { base: 150000, scaling: 'deploymentScale', userScaling: 1.0, badge: 'badge-software' },
-            'Data Management': { base: 120000, scaling: 'dataScale', userScaling: 0.9, badge: 'badge-data' },
-            'Talent & Training': { base: 350000, scaling: 'staffing', userScaling: 0.5, badge: 'badge-talent' },
-            'Integration & Development': { base: 200000, scaling: 'deploymentScale', userScaling: 0.7, badge: 'badge-integration' },
-            'Governance & Security': { base: 100000, scaling: 'fixed', userScaling: 0.6, badge: 'badge-governance' }
-        };
-
-        const growthRateDefaults = {
-            'Infrastructure & Compute': 0.08,
-            'Software & Licensing': 0.12,
-            'Data Management': 0.10,
-            'Talent & Training': 0.05,
-            'Integration & Development': 0.06,
-            'Governance & Security': 0.04
-        };
-
         let assumptions = {
             numberOfUsers: 100,
-            deploymentScale: 100,
-            dataReadiness: 70,
-            staffingLevel: 'medium',
-            ...Object.keys(growthRateDefaults).reduce((acc, cat) => {
-                acc[cat.toLowerCase().replace(/ & /g, '_').replace(/ /g, '_') + '_growth'] = growthRateDefaults[cat];
-                return acc;
-            }, {})
+            buildCost: 60160,
+            dataPerUser: 5
         };
 
-        function getGrowthRateKey(category) {
-            return category.toLowerCase().replace(/ & /g, '_').replace(/ /g, '_') + '_growth';
-        }
+        // Year 1 budget breakdown from document (at 100 users)
+        const baselineCosts = {
+            humanLaborBuild: 60160,
+            humanLaborOngoing: 35880,
+            cloudInfra: 4218,
+            dataStorage: 8778,
+            llmAPI: 267,
+            miscellaneous: 5000,
+            contingency: 20142
+        };
 
-        function renderGrowthRates() {
-            const grid = document.getElementById('growthRatesGrid');
-            grid.innerHTML = '';
-            Object.keys(baseYearCosts).forEach(category => {
-                const key = getGrowthRateKey(category);
-                const value = assumptions[key];
-                const badgeClass = baseYearCosts[category].badge;
-                const html = `
-                    <div>
-                        <div class="form-group">
-                            <label>${category}</label>
-                            <div class="slider-container">
-                                <input type="range" class="growth-rate" data-category="${category}" min="0" max="25" step="0.5" value="${value * 100}" />
-                                <span class="slider-value">${(value * 100).toFixed(1)}%</span>
-                            </div>
-                            <span class="category-badge ${badgeClass}">${category}</span>
-                        </div>
-                    </div>
-                `;
-                grid.innerHTML += html;
-            });
-        }
-
-        function getScalingFactor(category) {
-            const scaling = baseYearCosts[category].scaling;
-            if (scaling === 'deploymentScale') return assumptions.deploymentScale / 100;
-            if (scaling === 'dataScale') return (assumptions.dataReadiness / 100) * (assumptions.deploymentScale / 100);
-            if (scaling === 'staffing') {
-                const levels = { low: 0.7, medium: 1, high: 1.3 };
-                return levels[assumptions.staffingLevel] || 1;
-            }
-            return 1;
-        }
-
-        function getUserScalingFactor(category) {
-            const baselineUsers = 100;
-            const userScaling = baseYearCosts[category].userScaling;
-            return Math.pow(assumptions.numberOfUsers / baselineUsers, userScaling);
+        function getScalingFactor(numUsers) {
+            // Infrastructure and labor scale sub-linearly
+            // Formula: (users / 100)^0.7 for better economy of scale
+            return Math.pow(numUsers / 100, 0.7);
         }
 
         function calculateCosts() {
-            const costs = {};
+            const scaleFactor = getScalingFactor(assumptions.numberOfUsers);
+            
+            const costs = {
+                humanLaborBuild: baselineCosts.humanLaborBuild * scaleFactor,
+                humanLaborOngoing: baselineCosts.humanLaborOngoing * scaleFactor,
+                cloudInfra: baselineCosts.cloudInfra * scaleFactor,
+                dataStorage: baselineCosts.dataStorage * (assumptions.numberOfUsers / 100), // Linear scaling
+                llmAPI: baselineCosts.llmAPI * (assumptions.numberOfUsers / 100), // Linear scaling
+                miscellaneous: baselineCosts.miscellaneous * scaleFactor,
+            };
+
             const years = {};
+            years.year1 = costs.humanLaborBuild + costs.humanLaborOngoing + costs.cloudInfra + 
+                         costs.dataStorage + costs.llmAPI + costs.miscellaneous;
+            
+            // Years 2-5 exclude build cost and add growth
+            costs.contingencyYear1 = baselineCosts.contingency * scaleFactor;
+            years.year1 += costs.contingencyYear1;
 
-            Object.keys(baseYearCosts).forEach(category => {
-                const base = baseYearCosts[category].base;
-                const deploymentFactor = getScalingFactor(category);
-                const userFactor = getUserScalingFactor(category);
-                const year1Cost = base * deploymentFactor * userFactor;
-                const growthKey = getGrowthRateKey(category);
-                const growthRate = assumptions[growthKey];
+            years.year2 = (costs.humanLaborOngoing * 1.03) + (costs.cloudInfra * 1.05) + 
+                         (costs.dataStorage * 1.05) + (costs.llmAPI * 1.05) + (costs.miscellaneous / 2);
+            years.year2 += years.year2 * 0.13; // 13% contingency
 
-                costs[category] = {
-                    year1: year1Cost,
-                    year2: year1Cost * (1 + growthRate),
-                    year3: year1Cost * Math.pow(1 + growthRate, 2),
-                    year4: year1Cost * Math.pow(1 + growthRate, 3),
-                    year5: year1Cost * Math.pow(1 + growthRate, 4),
-                };
-            });
+            years.year3 = (costs.humanLaborOngoing * 1.06) + (costs.cloudInfra * 1.10) + 
+                         (costs.dataStorage * 1.10) + (costs.llmAPI * 1.10) + (costs.miscellaneous / 2);
+            years.year3 += years.year3 * 0.13;
 
-            for (let y = 1; y <= 5; y++) {
-                years[`year${y}`] = Object.values(costs).reduce((sum, cat) => sum + cat[`year${y}`], 0);
-            }
+            years.year4 = (costs.humanLaborOngoing * 1.09) + (costs.cloudInfra * 1.15) + 
+                         (costs.dataStorage * 1.15) + (costs.llmAPI * 1.15) + (costs.miscellaneous / 2);
+            years.year4 += years.year4 * 0.13;
+
+            years.year5 = (costs.humanLaborOngoing * 1.12) + (costs.cloudInfra * 1.20) + 
+                         (costs.dataStorage * 1.20) + (costs.llmAPI * 1.20) + (costs.miscellaneous / 2);
+            years.year5 += years.year5 * 0.13;
 
             return { costs, years };
         }
@@ -393,10 +317,9 @@
         function updateDisplay() {
             const { costs, years } = calculateCosts();
             const totalCost = Object.values(years).reduce((a, b) => a + b, 0);
-            const avgAnnual = totalCost / 5;
+            const avgAnnual = (totalCost - costs.humanLaborBuild) / 5;
             const costPerUser = assumptions.numberOfUsers > 0 ? avgAnnual / assumptions.numberOfUsers : 0;
 
-            // Update metrics
             const metricsHtml = `
                 <div class="metric-card">
                     <div class="metric-label">Year 1 Total</div>
@@ -411,81 +334,100 @@
                     <div class="metric-value">${formatCurrency(totalCost)}</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-label">Avg Annual</div>
+                    <div class="metric-label">Avg Annual (Ops)</div>
                     <div class="metric-value">${formatCurrency(avgAnnual)}</div>
                 </div>
-                <div class="metric-card highlight">
+                <div class="metric-card onetime">
                     <div class="metric-label">Cost Per User/Year</div>
                     <div class="metric-value">${formatCurrency(costPerUser)}</div>
                 </div>
             `;
             document.getElementById('metrics').innerHTML = metricsHtml;
 
-            // Update table
-            let tableHtml = '';
-            Object.keys(costs).forEach(category => {
-                const total = Object.values(costs[category]).reduce((a, b) => a + b, 0);
-                tableHtml += `
-                    <tr>
-                        <td>${category}</td>
-                        <td>${formatCurrency(costs[category].year1)}</td>
-                        <td>${formatCurrency(costs[category].year2)}</td>
-                        <td>${formatCurrency(costs[category].year3)}</td>
-                        <td>${formatCurrency(costs[category].year4)}</td>
-                        <td>${formatCurrency(costs[category].year5)}</td>
-                        <td><strong>${formatCurrency(total)}</strong></td>
-                    </tr>
-                `;
-            });
-            tableHtml += `
+            let tableHtml = `
+                <tr>
+                    <td>Human Labor (Build)</td>
+                    <td>${formatCurrency(costs.humanLaborBuild)}</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td><strong>${formatCurrency(costs.humanLaborBuild)}</strong></td>
+                </tr>
+                <tr>
+                    <td>Human Labor (Ongoing)</td>
+                    <td>${formatCurrency(costs.humanLaborOngoing)}</td>
+                    <td>${formatCurrency(costs.humanLaborOngoing * 1.03)}</td>
+                    <td>${formatCurrency(costs.humanLaborOngoing * 1.06)}</td>
+                    <td>${formatCurrency(costs.humanLaborOngoing * 1.09)}</td>
+                    <td>${formatCurrency(costs.humanLaborOngoing * 1.12)}</td>
+                    <td><strong>${formatCurrency(costs.humanLaborOngoing * 5.4)}</strong></td>
+                </tr>
+                <tr>
+                    <td>Cloud Infrastructure</td>
+                    <td>${formatCurrency(costs.cloudInfra)}</td>
+                    <td>${formatCurrency(costs.cloudInfra * 1.05)}</td>
+                    <td>${formatCurrency(costs.cloudInfra * 1.10)}</td>
+                    <td>${formatCurrency(costs.cloudInfra * 1.15)}</td>
+                    <td>${formatCurrency(costs.cloudInfra * 1.20)}</td>
+                    <td><strong>${formatCurrency(costs.cloudInfra * 5.5)}</strong></td>
+                </tr>
+                <tr>
+                    <td>Data Storage & Vector DB</td>
+                    <td>${formatCurrency(costs.dataStorage)}</td>
+                    <td>${formatCurrency(costs.dataStorage * 1.05)}</td>
+                    <td>${formatCurrency(costs.dataStorage * 1.10)}</td>
+                    <td>${formatCurrency(costs.dataStorage * 1.15)}</td>
+                    <td>${formatCurrency(costs.dataStorage * 1.20)}</td>
+                    <td><strong>${formatCurrency(costs.dataStorage * 5.5)}</strong></td>
+                </tr>
+                <tr>
+                    <td>LLM API Costs</td>
+                    <td>${formatCurrency(costs.llmAPI)}</td>
+                    <td>${formatCurrency(costs.llmAPI * 1.05)}</td>
+                    <td>${formatCurrency(costs.llmAPI * 1.10)}</td>
+                    <td>${formatCurrency(costs.llmAPI * 1.15)}</td>
+                    <td>${formatCurrency(costs.llmAPI * 1.20)}</td>
+                    <td><strong>${formatCurrency(costs.llmAPI * 5.5)}</strong></td>
+                </tr>
+                <tr>
+                    <td>Contingency Reserve</td>
+                    <td>${formatCurrency(costs.contingencyYear1)}</td>
+                    <td>${formatCurrency((years.year2 - costs.humanLaborOngoing * 1.03 - costs.cloudInfra * 1.05 - costs.dataStorage * 1.05 - costs.llmAPI * 1.05 - (costs.miscellaneous/2)))}</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td>—</td>
+                </tr>
                 <tr class="total-row">
-                    <td>Total</td>
+                    <td>TOTAL</td>
                     <td>${formatCurrency(years.year1)}</td>
                     <td>${formatCurrency(years.year2)}</td>
                     <td>${formatCurrency(years.year3)}</td>
                     <td>${formatCurrency(years.year4)}</td>
                     <td>${formatCurrency(years.year5)}</td>
-                    <td>${formatCurrency(totalCost)}</td>
+                    <td>${formatCurrency(Object.values(years).reduce((a,b) => a+b, 0))}</td>
                 </tr>
             `;
             document.getElementById('costTableBody').innerHTML = tableHtml;
         }
 
-        // Event listeners
         document.getElementById('numberOfUsers').addEventListener('input', (e) => {
-            assumptions.numberOfUsers = parseInt(e.target.value) || 0;
+            assumptions.numberOfUsers = parseInt(e.target.value) || 1;
             updateDisplay();
         });
 
-        document.getElementById('deploymentScale').addEventListener('input', (e) => {
-            assumptions.deploymentScale = parseFloat(e.target.value);
-            document.getElementById('deploymentScaleValue').textContent = assumptions.deploymentScale;
+        document.getElementById('buildCost').addEventListener('input', (e) => {
+            assumptions.buildCost = parseFloat(e.target.value) || 0;
+            baselineCosts.humanLaborBuild = assumptions.buildCost;
             updateDisplay();
         });
 
-        document.getElementById('dataReadiness').addEventListener('input', (e) => {
-            assumptions.dataReadiness = parseFloat(e.target.value);
-            document.getElementById('dataReadinessValue').textContent = assumptions.dataReadiness;
+        document.getElementById('dataPerUser').addEventListener('input', (e) => {
+            assumptions.dataPerUser = parseFloat(e.target.value) || 1;
             updateDisplay();
         });
 
-        document.getElementById('staffingLevel').addEventListener('change', (e) => {
-            assumptions.staffingLevel = e.target.value;
-            updateDisplay();
-        });
-
-        document.addEventListener('input', (e) => {
-            if (e.target.classList.contains('growth-rate')) {
-                const category = e.target.dataset.category;
-                const key = getGrowthRateKey(category);
-                assumptions[key] = parseFloat(e.target.value) / 100;
-                e.target.nextElementSibling.textContent = (parseFloat(e.target.value)).toFixed(1) + '%';
-                updateDisplay();
-            }
-        });
-
-        // Initial render
-        renderGrowthRates();
         updateDisplay();
     </script>
 </body>
