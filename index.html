@@ -211,7 +211,7 @@
                 <div class="form-group">
                     <label>👥 Number of Users</label>
                     <input type="number" id="numberOfUsers" min="1" value="100" />
-                    <small>Total users in scope for this implementation</small>
+                    <small>Total users in scope (base = 100 users)</small>
                 </div>
 
                 <div class="form-group">
@@ -271,6 +271,8 @@
             <div class="notes">
                 <strong>⚠️ Important Notes & Assumptions</strong>
                 <ul>
+                    <li>Costs scale based on number of users (baseline = 100 users)</li>
+                    <li>Scaling factors vary by category (Infrastructure 0.8x, Software 1.0x, Talent 0.5x, etc.)</li>
                     <li>These costs are estimates based on industry benchmarks and should be validated with actual vendor quotes</li>
                     <li>Growth rates reflect typical scaling patterns; adjust based on your organization's specific roadmap</li>
                     <li>Cost per user is calculated as average annual cost divided by number of users</li>
@@ -284,12 +286,12 @@
 
     <script>
         const baseYearCosts = {
-            'Infrastructure & Compute': { base: 250000, scaling: 'deploymentScale', badge: 'badge-infrastructure' },
-            'Software & Licensing': { base: 150000, scaling: 'deploymentScale', badge: 'badge-software' },
-            'Data Management': { base: 120000, scaling: 'dataScale', badge: 'badge-data' },
-            'Talent & Training': { base: 350000, scaling: 'staffing', badge: 'badge-talent' },
-            'Integration & Development': { base: 200000, scaling: 'deploymentScale', badge: 'badge-integration' },
-            'Governance & Security': { base: 100000, scaling: 'fixed', badge: 'badge-governance' }
+            'Infrastructure & Compute': { base: 250000, scaling: 'deploymentScale', userScaling: 0.8, badge: 'badge-infrastructure' },
+            'Software & Licensing': { base: 150000, scaling: 'deploymentScale', userScaling: 1.0, badge: 'badge-software' },
+            'Data Management': { base: 120000, scaling: 'dataScale', userScaling: 0.9, badge: 'badge-data' },
+            'Talent & Training': { base: 350000, scaling: 'staffing', userScaling: 0.5, badge: 'badge-talent' },
+            'Integration & Development': { base: 200000, scaling: 'deploymentScale', userScaling: 0.7, badge: 'badge-integration' },
+            'Governance & Security': { base: 100000, scaling: 'fixed', userScaling: 0.6, badge: 'badge-governance' }
         };
 
         const growthRateDefaults = {
@@ -350,14 +352,21 @@
             return 1;
         }
 
+        function getUserScalingFactor(category) {
+            const baselineUsers = 100;
+            const userScaling = baseYearCosts[category].userScaling;
+            return Math.pow(assumptions.numberOfUsers / baselineUsers, userScaling);
+        }
+
         function calculateCosts() {
             const costs = {};
             const years = {};
 
             Object.keys(baseYearCosts).forEach(category => {
                 const base = baseYearCosts[category].base;
-                const factor = getScalingFactor(category);
-                const year1Cost = base * factor;
+                const deploymentFactor = getScalingFactor(category);
+                const userFactor = getUserScalingFactor(category);
+                const year1Cost = base * deploymentFactor * userFactor;
                 const growthKey = getGrowthRateKey(category);
                 const growthRate = assumptions[growthKey];
 
