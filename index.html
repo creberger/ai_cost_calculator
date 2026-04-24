@@ -8,71 +8,226 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
             line-height: 1.6;
             padding: 2rem 1rem;
+            min-height: 100vh;
         }
-        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; }
-        .header { padding: 2rem; border-bottom: 1px solid #e5e5e5; }
-        .header h1 { font-size: 28px; margin-bottom: 0.5rem; color: #1f1f1f; }
-        .header p { font-size: 14px; color: #666; }
-        .section { padding: 1.5rem; border-bottom: 1px solid #e5e5e5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+        .header { 
+            padding: 3rem 2rem; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: white;
+            text-align: center;
+        }
+        .header h1 { font-size: 36px; margin-bottom: 0.5rem; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .header p { font-size: 16px; opacity: 0.95; }
+        .section { padding: 2.5rem; border-bottom: 2px solid #f0f0f0; }
+        .section:nth-child(even) { background: linear-gradient(to right, #f8f9ff, #fff5f8); }
         .section:last-child { border-bottom: none; }
-        .section-title { font-size: 16px; font-weight: 600; margin-bottom: 1.5rem; color: #1f1f1f; }
+        .section-title { 
+            font-size: 20px; 
+            font-weight: 800; 
+            margin-bottom: 2rem; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid #f093fb;
+            display: inline-block;
+        }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
         .form-group { display: flex; flex-direction: column; }
-        .form-group label { font-size: 13px; font-weight: 600; margin-bottom: 0.5rem; color: #555; }
-        .form-group input[type="range"] { cursor: pointer; height: 4px; border-radius: 2px; accent-color: #0066cc; }
-        .form-group input[type="number"] { padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
-        .form-group select { padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; background: white; cursor: pointer; }
-        .form-group small { font-size: 12px; color: #999; margin-top: 0.5rem; }
+        .form-group label { 
+            font-size: 13px; 
+            font-weight: 800; 
+            margin-bottom: 0.75rem; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .form-group input[type="range"] { 
+            cursor: pointer; 
+            height: 8px; 
+            border-radius: 4px; 
+            accent-color: #667eea; 
+        }
+        .form-group input[type="number"] { 
+            padding: 0.75rem; 
+            border: 2px solid #667eea; 
+            border-radius: 8px; 
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            background: linear-gradient(to right, #f8f9ff, white);
+        }
+        .form-group input[type="number"]:focus { 
+            outline: none;
+            border-color: #f093fb;
+            box-shadow: 0 0 0 4px rgba(240, 147, 251, 0.2);
+        }
+        .form-group select { 
+            padding: 0.75rem; 
+            border: 2px solid #667eea; 
+            border-radius: 8px; 
+            font-size: 14px;
+            font-weight: 600;
+            background: linear-gradient(to right, #f8f9ff, white); 
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .form-group select:focus {
+            outline: none;
+            border-color: #f093fb;
+            box-shadow: 0 0 0 4px rgba(240, 147, 251, 0.2);
+        }
+        .form-group small { font-size: 12px; color: #666; margin-top: 0.5rem; font-style: italic; }
         .slider-container { display: flex; gap: 0.75rem; align-items: center; }
         .slider-container input { flex: 1; }
-        .slider-value { font-size: 13px; font-weight: 600; color: #1f1f1f; min-width: 40px; text-align: right; }
-        .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-        .metric-card { background: #f9f9f9; border: 1px solid #e5e5e5; border-radius: 6px; padding: 1rem; }
-        .metric-label { font-size: 12px; font-weight: 600; color: #666; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        .metric-value { font-size: 22px; font-weight: 700; color: #1f1f1f; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; overflow-x: auto; }
-        thead { background: #f0f0f0; border-bottom: 2px solid #ddd; }
-        th { padding: 0.75rem; text-align: right; font-weight: 600; color: #555; }
+        .slider-value { 
+            font-size: 13px; 
+            font-weight: 800; 
+            color: white; 
+            min-width: 50px; 
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 0.5rem;
+            border-radius: 6px;
+        }
+        .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
+        .metric-card { 
+            background: white;
+            border: 3px solid #e0e0e0;
+            border-radius: 12px; 
+            padding: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+        }
+        .metric-card:hover { 
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+        .metric-card.highlight { 
+            border-color: #ff6b9d;
+            background: linear-gradient(135deg, #fff5f7, #ffe8f0);
+        }
+        .metric-card.highlight::before {
+            background: linear-gradient(90deg, #ff6b9d, #ff4757);
+        }
+        .metric-label { 
+            font-size: 11px; 
+            font-weight: 800; 
+            color: #667eea; 
+            margin-bottom: 0.75rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+        }
+        .metric-value { 
+            font-size: 26px; 
+            font-weight: 800; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .metric-card.highlight .metric-value { 
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff4757 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; overflow-x: auto; margin-top: 1rem; }
+        thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        th { padding: 1rem 0.75rem; text-align: right; font-weight: 800; letter-spacing: 0.5px; }
         th:first-child { text-align: left; }
-        td { padding: 0.75rem; text-align: right; border-bottom: 1px solid #f0f0f0; }
-        td:first-child { text-align: left; color: #1f1f1f; font-weight: 500; }
-        tbody tr:hover { background: #fafafa; }
-        .total-row { background: #f0f0f0; font-weight: 700; border-top: 2px solid #ddd; }
-        .notes { background: #f9f9f9; border-left: 4px solid #0066cc; padding: 1rem; font-size: 13px; line-height: 1.7; }
+        td { padding: 0.95rem 0.75rem; text-align: right; border-bottom: 2px solid #f0f0f0; }
+        td:first-child { text-align: left; color: #333; font-weight: 700; }
+        tbody tr { transition: all 0.2s; }
+        tbody tr:hover { background: linear-gradient(to right, #f8f9ff, #fff5f8); }
+        .total-row { 
+            background: linear-gradient(135deg, #f8f9ff 0%, #fff5f8 100%); 
+            font-weight: 800; 
+            border-top: 3px solid #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+        .total-row td { 
+            color: #667eea;
+            font-weight: 800;
+        }
+        .notes { 
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            border-left: 6px solid #ff9800;
+            border-radius: 12px;
+            padding: 2rem; 
+            font-size: 13px; 
+            line-height: 1.9;
+            color: white;
+        }
+        .notes strong { color: #ffeb3b; font-size: 14px; }
         .notes ul { list-style: none; padding-left: 0; }
-        .notes li { margin-bottom: 0.5rem; padding-left: 1.5rem; position: relative; }
-        .notes li:before { content: "•"; position: absolute; left: 0; color: #0066cc; font-weight: bold; }
-        .growth-rates-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+        .notes li { margin-bottom: 0.8rem; padding-left: 2rem; position: relative; }
+        .notes li:before { content: "✓"; position: absolute; left: 0; color: #ffeb3b; font-weight: bold; font-size: 16px; }
+        .growth-rates-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+        .category-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 0.5rem;
+        }
+        .badge-infrastructure { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .badge-software { background: linear-gradient(135deg, #f093fb, #f5576c); color: white; }
+        .badge-data { background: linear-gradient(135deg, #4facfe, #00f2fe); color: white; }
+        .badge-talent { background: linear-gradient(135deg, #43e97b, #38f9d7); color: white; }
+        .badge-integration { background: linear-gradient(135deg, #fa709a, #fee140); color: white; }
+        .badge-governance { background: linear-gradient(135deg, #30cfd0, #330867); color: white; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>AI Implementation Cost Model</h1>
-            <p>5-year total cost of ownership calculator</p>
+            <h1>💰 AI Implementation Cost Model</h1>
+            <p>Interactive 5-year total cost of ownership calculator with per-user metrics</p>
         </div>
 
         <div class="section">
-            <div class="section-title">Deployment assumptions</div>
+            <div class="section-title">📊 Deployment Assumptions</div>
             <div class="grid">
                 <div class="form-group">
-                    <label>Deployment scale: <span id="deploymentScaleValue">100</span>%</label>
+                    <label>👥 Number of Users</label>
+                    <input type="number" id="numberOfUsers" min="1" value="100" />
+                    <small>Total users in scope for this implementation</small>
+                </div>
+
+                <div class="form-group">
+                    <label>📈 Deployment Scale: <span id="deploymentScaleValue">100</span>%</label>
                     <input type="range" id="deploymentScale" min="25" max="200" value="100" />
                     <small>Full deployment at 100%, pilot at 50%</small>
                 </div>
 
                 <div class="form-group">
-                    <label>Data readiness: <span id="dataReadinessValue">70</span>%</label>
+                    <label>📁 Data Readiness: <span id="dataReadinessValue">70</span>%</label>
                     <input type="range" id="dataReadiness" min="30" max="100" value="70" />
                     <small>Quality & availability of source data</small>
                 </div>
 
                 <div class="form-group">
-                    <label>Staffing level</label>
+                    <label>👔 Staffing Level</label>
                     <select id="staffingLevel">
                         <option value="low">Low (minimal in-house)</option>
                         <option value="medium" selected>Medium (balanced team)</option>
@@ -81,18 +236,19 @@
                 </div>
             </div>
 
-            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e5e5;">
-                <div class="section-title">Year-over-year growth rates</div>
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e0e0e0;">
+                <div class="section-title">📉 Growth Rates (Year-over-Year)</div>
                 <div class="growth-rates-grid" id="growthRatesGrid"></div>
             </div>
         </div>
 
         <div class="section">
+            <div class="section-title">💎 Key Metrics</div>
             <div class="metrics" id="metrics"></div>
         </div>
 
         <div class="section">
-            <div class="section-title">5-year cost breakdown by category</div>
+            <div class="section-title">📋 5-Year Cost Breakdown by Category</div>
             <div style="overflow-x: auto;">
                 <table id="costTable">
                     <thead>
@@ -113,10 +269,11 @@
 
         <div class="section">
             <div class="notes">
-                <strong>Important notes</strong>
+                <strong>⚠️ Important Notes & Assumptions</strong>
                 <ul>
                     <li>These costs are estimates based on industry benchmarks and should be validated with actual vendor quotes</li>
                     <li>Growth rates reflect typical scaling patterns; adjust based on your organization's specific roadmap</li>
+                    <li>Cost per user is calculated as average annual cost divided by number of users</li>
                     <li>Infrastructure costs scale with deployment size; data management includes tools, storage, and governance</li>
                     <li>Talent costs include hiring, training, and external consulting; adjust staffing level to model different scenarios</li>
                     <li>Final budget should include 15-20% contingency buffer for unexpected costs</li>
@@ -127,12 +284,12 @@
 
     <script>
         const baseYearCosts = {
-            'Infrastructure & Compute': { base: 250000, scaling: 'deploymentScale' },
-            'Software & Licensing': { base: 150000, scaling: 'deploymentScale' },
-            'Data Management': { base: 120000, scaling: 'dataScale' },
-            'Talent & Training': { base: 350000, scaling: 'staffing' },
-            'Integration & Development': { base: 200000, scaling: 'deploymentScale' },
-            'Governance & Security': { base: 100000, scaling: 'fixed' }
+            'Infrastructure & Compute': { base: 250000, scaling: 'deploymentScale', badge: 'badge-infrastructure' },
+            'Software & Licensing': { base: 150000, scaling: 'deploymentScale', badge: 'badge-software' },
+            'Data Management': { base: 120000, scaling: 'dataScale', badge: 'badge-data' },
+            'Talent & Training': { base: 350000, scaling: 'staffing', badge: 'badge-talent' },
+            'Integration & Development': { base: 200000, scaling: 'deploymentScale', badge: 'badge-integration' },
+            'Governance & Security': { base: 100000, scaling: 'fixed', badge: 'badge-governance' }
         };
 
         const growthRateDefaults = {
@@ -145,6 +302,7 @@
         };
 
         let assumptions = {
+            numberOfUsers: 100,
             deploymentScale: 100,
             dataReadiness: 70,
             staffingLevel: 'medium',
@@ -164,6 +322,7 @@
             Object.keys(baseYearCosts).forEach(category => {
                 const key = getGrowthRateKey(category);
                 const value = assumptions[key];
+                const badgeClass = baseYearCosts[category].badge;
                 const html = `
                     <div>
                         <div class="form-group">
@@ -172,6 +331,7 @@
                                 <input type="range" class="growth-rate" data-category="${category}" min="0" max="25" step="0.5" value="${value * 100}" />
                                 <span class="slider-value">${(value * 100).toFixed(1)}%</span>
                             </div>
+                            <span class="category-badge ${badgeClass}">${category}</span>
                         </div>
                     </div>
                 `;
@@ -224,24 +384,30 @@
         function updateDisplay() {
             const { costs, years } = calculateCosts();
             const totalCost = Object.values(years).reduce((a, b) => a + b, 0);
+            const avgAnnual = totalCost / 5;
+            const costPerUser = assumptions.numberOfUsers > 0 ? avgAnnual / assumptions.numberOfUsers : 0;
 
             // Update metrics
             const metricsHtml = `
                 <div class="metric-card">
-                    <div class="metric-label">Year 1 total</div>
+                    <div class="metric-label">Year 1 Total</div>
                     <div class="metric-value">${formatCurrency(years.year1)}</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-label">Year 5 total</div>
+                    <div class="metric-label">Year 5 Total</div>
                     <div class="metric-value">${formatCurrency(years.year5)}</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-label">5-year total</div>
+                    <div class="metric-label">5-Year Total</div>
                     <div class="metric-value">${formatCurrency(totalCost)}</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-label">Average annual</div>
-                    <div class="metric-value">${formatCurrency(totalCost / 5)}</div>
+                    <div class="metric-label">Avg Annual</div>
+                    <div class="metric-value">${formatCurrency(avgAnnual)}</div>
+                </div>
+                <div class="metric-card highlight">
+                    <div class="metric-label">Cost Per User/Year</div>
+                    <div class="metric-value">${formatCurrency(costPerUser)}</div>
                 </div>
             `;
             document.getElementById('metrics').innerHTML = metricsHtml;
@@ -277,6 +443,11 @@
         }
 
         // Event listeners
+        document.getElementById('numberOfUsers').addEventListener('input', (e) => {
+            assumptions.numberOfUsers = parseInt(e.target.value) || 0;
+            updateDisplay();
+        });
+
         document.getElementById('deploymentScale').addEventListener('input', (e) => {
             assumptions.deploymentScale = parseFloat(e.target.value);
             document.getElementById('deploymentScaleValue').textContent = assumptions.deploymentScale;
