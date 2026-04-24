@@ -70,16 +70,6 @@
             box-shadow: 0 0 0 4px rgba(240, 147, 251, 0.2);
         }
         .form-group small { font-size: 12px; color: #666; margin-top: 0.5rem; font-style: italic; }
-        .slider-value { 
-            font-size: 13px; 
-            font-weight: 800; 
-            color: white; 
-            min-width: 50px; 
-            text-align: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 0.5rem;
-            border-radius: 6px;
-        }
         .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
         .metric-card { 
             background: white;
@@ -104,13 +94,6 @@
             box-shadow: 0 12px 30px rgba(102, 126, 234, 0.2);
             border-color: #667eea;
         }
-        .metric-card.onetime {
-            border-color: #ffc107;
-            background: linear-gradient(135deg, #fff9e6, #fffbf0);
-        }
-        .metric-card.onetime::before {
-            background: linear-gradient(90deg, #ffc107, #ff9800);
-        }
         .metric-label { 
             font-size: 11px; 
             font-weight: 800; 
@@ -119,19 +102,10 @@
             text-transform: uppercase; 
             letter-spacing: 1.5px; 
         }
-        .metric-card.onetime .metric-label {
-            color: #ff9800;
-        }
         .metric-value { 
             font-size: 26px; 
             font-weight: 800; 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .metric-card.onetime .metric-value {
-            background: linear-gradient(135deg, #ff9800 0%, #ffc107 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -143,14 +117,6 @@
         td { padding: 0.95rem 0.75rem; text-align: right; border-bottom: 2px solid #f0f0f0; }
         td:first-child { text-align: left; color: #333; font-weight: 700; }
         tbody tr:hover { background: linear-gradient(to right, #f8f9ff, #fff5f8); }
-        .onetime-row {
-            background: linear-gradient(135deg, #fff9e6 0%, #fffbf0 100%);
-            font-weight: 800;
-            border-top: 3px solid #ff9800;
-        }
-        .onetime-row td {
-            color: #ff9800;
-        }
         .total-row { 
             background: linear-gradient(135deg, #f8f9ff 0%, #fff5f8 100%); 
             font-weight: 800; 
@@ -174,6 +140,8 @@
         .notes ul { list-style: none; padding-left: 0; }
         .notes li { margin-bottom: 0.8rem; padding-left: 2rem; position: relative; }
         .notes li:before { content: "✓"; position: absolute; left: 0; color: #ffeb3b; font-weight: bold; font-size: 16px; }
+        .info-box { background: #e3f2fd; border-left: 4px solid #0066cc; padding: 1rem; margin: 1rem 0; border-radius: 4px; font-size: 12px; }
+        .info-box strong { color: #0066cc; }
     </style>
 </head>
 <body>
@@ -181,7 +149,7 @@
         <div class="header">
             <h1>💰 Autonomous Support Note Generation Cost Model</h1>
             <p>Based on: 100-user AI implementation budget analysis (Feb 2026)</p>
-            <p style="font-size: 12px; opacity: 0.9;">Scalable model for communications AI projects</p>
+            <p style="font-size: 12px; opacity: 0.9;">Costs scale with user count AND data volume</p>
         </div>
 
         <div class="section">
@@ -194,16 +162,20 @@
                 </div>
 
                 <div class="form-group">
+                    <label>📁 Data Volume: MB/day per User</label>
+                    <input type="number" id="dataPerUser" min="0.5" value="5" step="0.5" />
+                    <small>Communications data per user daily (baseline = 5 MB)</small>
+                </div>
+
+                <div class="form-group">
                     <label>⚡ Year 1 Build Cost (Base)</label>
                     <input type="number" id="buildCost" min="0" value="60160" />
                     <small>One-time AI/ML engineering & setup</small>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label>📁 Data Volume: MB/day per User</label>
-                    <input type="number" id="dataPerUser" min="1" value="5" />
-                    <small>Communications data per user daily</small>
-                </div>
+            <div class="info-box">
+                <strong>💡 How costs scale with data:</strong> Storage costs scale linearly with data volume. LLM API costs scale with token volume (~975 tokens per MB). Infrastructure may increase if data volume exceeds normal thresholds.
             </div>
         </div>
 
@@ -236,12 +208,11 @@
             <div class="notes">
                 <strong>📋 Cost Model Details (from document analysis)</strong>
                 <ul>
-                    <li><strong>Human Labor (64% of spend):</strong> Y1 build = $60,160; ongoing Y2+ = $35,880/yr with 3% annual increase</li>
-                    <li><strong>Cloud Infrastructure (6% of spend):</strong> AWS ECS containers, RDS, ALB, monitoring = $4,218/yr baseline with 5% annual increase</li>
-                    <li><strong>Data & Storage (12% of spend):</strong> Vector database (Pinecone) $8,400/yr + S3 storage scaling with corpus growth</li>
-                    <li><strong>LLM API Costs (<1% of spend):</strong> ~$267/yr for Claude Haiku + Sonnet with optimizations; ~$3,336/yr heavy transcript scenario</li>
+                    <li><strong>Human Labor (64% of spend):</strong> Y1 build = $60,160; ongoing Y2+ = $35,880/yr with 3% annual increase (scales with user count)</li>
+                    <li><strong>Cloud Infrastructure (6% of spend):</strong> AWS ECS containers, RDS, ALB, monitoring = $4,218/yr baseline with 5% annual increase (scales with users, may increase with data volume)</li>
+                    <li><strong>Data & Storage (12% of spend):</strong> Vector database $8,400/yr + S3 storage scaling WITH corpus growth and data volume</li>
+                    <li><strong>LLM API Costs (<1% of spend):</strong> Scales linearly with token volume (based on data volume input). ~267/yr at 5 MB/day baseline</li>
                     <li><strong>Contingency:</strong> Year 1 = 15% of budget; Years 2-5 = 13% (covers scope changes, rework, inflation)</li>
-                    <li>Costs scale sub-linearly with users for labor; linearly for API/storage. Infrastructure shows economy of scale at 100+ users.</li>
                 </ul>
             </div>
         </div>
@@ -250,11 +221,11 @@
     <script>
         let assumptions = {
             numberOfUsers: 100,
-            buildCost: 60160,
-            dataPerUser: 5
+            dataPerUser: 5,
+            buildCost: 60160
         };
 
-        // Year 1 budget breakdown from document (at 100 users)
+        // Year 1 budget breakdown from document (at 100 users, 5 MB/day)
         const baselineCosts = {
             humanLaborBuild: 60160,
             humanLaborOngoing: 35880,
@@ -265,35 +236,42 @@
             contingency: 20142
         };
 
+        const baselineDataPerUser = 5; // MB/day
+
         function getScalingFactor(numUsers) {
             // Infrastructure and labor scale sub-linearly
-            // Formula: (users / 100)^0.7 for better economy of scale
             return Math.pow(numUsers / 100, 0.7);
         }
 
+        function getDataScalingFactor(dataPerUser) {
+            // Data costs scale linearly with volume
+            return dataPerUser / baselineDataPerUser;
+        }
+
         function calculateCosts() {
-            const scaleFactor = getScalingFactor(assumptions.numberOfUsers);
+            const userScaleFactor = getScalingFactor(assumptions.numberOfUsers);
+            const dataScaleFactor = getDataScalingFactor(assumptions.dataPerUser);
             
             const costs = {
-                humanLaborBuild: baselineCosts.humanLaborBuild * scaleFactor,
-                humanLaborOngoing: baselineCosts.humanLaborOngoing * scaleFactor,
-                cloudInfra: baselineCosts.cloudInfra * scaleFactor,
-                dataStorage: baselineCosts.dataStorage * (assumptions.numberOfUsers / 100), // Linear scaling
-                llmAPI: baselineCosts.llmAPI * (assumptions.numberOfUsers / 100), // Linear scaling
-                miscellaneous: baselineCosts.miscellaneous * scaleFactor,
+                humanLaborBuild: baselineCosts.humanLaborBuild * userScaleFactor,
+                humanLaborOngoing: baselineCosts.humanLaborOngoing * userScaleFactor,
+                cloudInfra: baselineCosts.cloudInfra * userScaleFactor * (1 + (dataScaleFactor - 1) * 0.3), // Data impacts infra by 30%
+                dataStorage: baselineCosts.dataStorage * (assumptions.numberOfUsers / 100) * dataScaleFactor, // Scales with both users and data
+                llmAPI: baselineCosts.llmAPI * (assumptions.numberOfUsers / 100) * dataScaleFactor, // Scales linearly with token volume
+                miscellaneous: baselineCosts.miscellaneous * userScaleFactor,
             };
 
             const years = {};
             years.year1 = costs.humanLaborBuild + costs.humanLaborOngoing + costs.cloudInfra + 
                          costs.dataStorage + costs.llmAPI + costs.miscellaneous;
             
-            // Years 2-5 exclude build cost and add growth
-            costs.contingencyYear1 = baselineCosts.contingency * scaleFactor;
+            costs.contingencyYear1 = baselineCosts.contingency * userScaleFactor * (1 + (dataScaleFactor - 1) * 0.2);
             years.year1 += costs.contingencyYear1;
 
+            // Years 2-5 exclude build cost and add growth
             years.year2 = (costs.humanLaborOngoing * 1.03) + (costs.cloudInfra * 1.05) + 
                          (costs.dataStorage * 1.05) + (costs.llmAPI * 1.05) + (costs.miscellaneous / 2);
-            years.year2 += years.year2 * 0.13; // 13% contingency
+            years.year2 += years.year2 * 0.13;
 
             years.year3 = (costs.humanLaborOngoing * 1.06) + (costs.cloudInfra * 1.10) + 
                          (costs.dataStorage * 1.10) + (costs.llmAPI * 1.10) + (costs.miscellaneous / 2);
@@ -337,7 +315,7 @@
                     <div class="metric-label">Avg Annual (Ops)</div>
                     <div class="metric-value">${formatCurrency(avgAnnual)}</div>
                 </div>
-                <div class="metric-card onetime">
+                <div class="metric-card">
                     <div class="metric-label">Cost Per User/Year</div>
                     <div class="metric-value">${formatCurrency(costPerUser)}</div>
                 </div>
@@ -393,10 +371,10 @@
                 <tr>
                     <td>Contingency Reserve</td>
                     <td>${formatCurrency(costs.contingencyYear1)}</td>
-                    <td>${formatCurrency((years.year2 - costs.humanLaborOngoing * 1.03 - costs.cloudInfra * 1.05 - costs.dataStorage * 1.05 - costs.llmAPI * 1.05 - (costs.miscellaneous/2)))}</td>
-                    <td>—</td>
-                    <td>—</td>
-                    <td>—</td>
+                    <td>${formatCurrency(years.year2 * 0.13)}</td>
+                    <td>${formatCurrency(years.year3 * 0.13)}</td>
+                    <td>${formatCurrency(years.year4 * 0.13)}</td>
+                    <td>${formatCurrency(years.year5 * 0.13)}</td>
                     <td>—</td>
                 </tr>
                 <tr class="total-row">
@@ -417,14 +395,14 @@
             updateDisplay();
         });
 
-        document.getElementById('buildCost').addEventListener('input', (e) => {
-            assumptions.buildCost = parseFloat(e.target.value) || 0;
-            baselineCosts.humanLaborBuild = assumptions.buildCost;
+        document.getElementById('dataPerUser').addEventListener('input', (e) => {
+            assumptions.dataPerUser = parseFloat(e.target.value) || 0.5;
             updateDisplay();
         });
 
-        document.getElementById('dataPerUser').addEventListener('input', (e) => {
-            assumptions.dataPerUser = parseFloat(e.target.value) || 1;
+        document.getElementById('buildCost').addEventListener('input', (e) => {
+            assumptions.buildCost = parseFloat(e.target.value) || 0;
+            baselineCosts.humanLaborBuild = assumptions.buildCost;
             updateDisplay();
         });
 
