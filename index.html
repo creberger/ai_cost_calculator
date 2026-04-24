@@ -4,15 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Implementation Cost Calculator</title>
-    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/react.min.js"></script>
-    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/react-dom.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; }
-        #root { padding: 2rem 1rem; max-width: 1200px; margin: 0 auto; }
-        .container { background: white; border-radius: 8px; }
-        .header { padding: 2rem; background: white; border-bottom: 1px solid #e5e5e5; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; }
+        .header { padding: 2rem; border-bottom: 1px solid #e5e5e5; }
         .header h1 { font-size: 28px; margin-bottom: 0.5rem; color: #1f1f1f; }
         .header p { font-size: 14px; color: #666; }
         .section { padding: 1.5rem; border-bottom: 1px solid #e5e5e5; }
@@ -25,14 +27,14 @@
         .form-group input[type="number"] { padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
         .form-group select { padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; background: white; cursor: pointer; }
         .form-group small { font-size: 12px; color: #999; margin-top: 0.5rem; }
-        .slider-value { font-size: 13px; font-weight: 600; color: #1f1f1f; min-width: 40px; text-align: right; }
         .slider-container { display: flex; gap: 0.75rem; align-items: center; }
         .slider-container input { flex: 1; }
+        .slider-value { font-size: 13px; font-weight: 600; color: #1f1f1f; min-width: 40px; text-align: right; }
         .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
         .metric-card { background: #f9f9f9; border: 1px solid #e5e5e5; border-radius: 6px; padding: 1rem; }
         .metric-label { font-size: 12px; font-weight: 600; color: #666; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
         .metric-value { font-size: 22px; font-weight: 700; color: #1f1f1f; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; overflow-x: auto; }
         thead { background: #f0f0f0; border-bottom: 2px solid #ddd; }
         th { padding: 0.75rem; text-align: right; font-weight: 600; color: #555; }
         th:first-child { text-align: left; }
@@ -48,211 +50,263 @@
     </style>
 </head>
 <body>
-    <div id="root"></div>
-    <script type="text/babel">
-        const { useState } = React;
+    <div class="container">
+        <div class="header">
+            <h1>AI Implementation Cost Model</h1>
+            <p>5-year total cost of ownership calculator</p>
+        </div>
 
-        function CostCalculator() {
-            const [assumptions, setAssumptions] = useState({
-                deploymentScale: 100,
-                dataReadiness: 70,
-                staffingLevel: 'medium',
-                infrastructureGrowthRate: 0.08,
-                licenseGrowthRate: 0.12,
-                dataGrowthRate: 0.10,
-                talentGrowthRate: 0.05,
-                integrationGrowthRate: 0.06,
-                governanceGrowthRate: 0.04
+        <div class="section">
+            <div class="section-title">Deployment assumptions</div>
+            <div class="grid">
+                <div class="form-group">
+                    <label>Deployment scale: <span id="deploymentScaleValue">100</span>%</label>
+                    <input type="range" id="deploymentScale" min="25" max="200" value="100" />
+                    <small>Full deployment at 100%, pilot at 50%</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Data readiness: <span id="dataReadinessValue">70</span>%</label>
+                    <input type="range" id="dataReadiness" min="30" max="100" value="70" />
+                    <small>Quality & availability of source data</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Staffing level</label>
+                    <select id="staffingLevel">
+                        <option value="low">Low (minimal in-house)</option>
+                        <option value="medium" selected>Medium (balanced team)</option>
+                        <option value="high">High (dedicated team)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e5e5;">
+                <div class="section-title">Year-over-year growth rates</div>
+                <div class="growth-rates-grid" id="growthRatesGrid"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="metrics" id="metrics"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">5-year cost breakdown by category</div>
+            <div style="overflow-x: auto;">
+                <table id="costTable">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Year 1</th>
+                            <th>Year 2</th>
+                            <th>Year 3</th>
+                            <th>Year 4</th>
+                            <th>Year 5</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="costTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="notes">
+                <strong>Important notes</strong>
+                <ul>
+                    <li>These costs are estimates based on industry benchmarks and should be validated with actual vendor quotes</li>
+                    <li>Growth rates reflect typical scaling patterns; adjust based on your organization's specific roadmap</li>
+                    <li>Infrastructure costs scale with deployment size; data management includes tools, storage, and governance</li>
+                    <li>Talent costs include hiring, training, and external consulting; adjust staffing level to model different scenarios</li>
+                    <li>Final budget should include 15-20% contingency buffer for unexpected costs</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const baseYearCosts = {
+            'Infrastructure & Compute': { base: 250000, scaling: 'deploymentScale' },
+            'Software & Licensing': { base: 150000, scaling: 'deploymentScale' },
+            'Data Management': { base: 120000, scaling: 'dataScale' },
+            'Talent & Training': { base: 350000, scaling: 'staffing' },
+            'Integration & Development': { base: 200000, scaling: 'deploymentScale' },
+            'Governance & Security': { base: 100000, scaling: 'fixed' }
+        };
+
+        const growthRateDefaults = {
+            'Infrastructure & Compute': 0.08,
+            'Software & Licensing': 0.12,
+            'Data Management': 0.10,
+            'Talent & Training': 0.05,
+            'Integration & Development': 0.06,
+            'Governance & Security': 0.04
+        };
+
+        let assumptions = {
+            deploymentScale: 100,
+            dataReadiness: 70,
+            staffingLevel: 'medium',
+            ...Object.keys(growthRateDefaults).reduce((acc, cat) => {
+                acc[cat.toLowerCase().replace(/ & /g, '_').replace(/ /g, '_') + '_growth'] = growthRateDefaults[cat];
+                return acc;
+            }, {})
+        };
+
+        function getGrowthRateKey(category) {
+            return category.toLowerCase().replace(/ & /g, '_').replace(/ /g, '_') + '_growth';
+        }
+
+        function renderGrowthRates() {
+            const grid = document.getElementById('growthRatesGrid');
+            grid.innerHTML = '';
+            Object.keys(baseYearCosts).forEach(category => {
+                const key = getGrowthRateKey(category);
+                const value = assumptions[key];
+                const html = `
+                    <div>
+                        <div class="form-group">
+                            <label>${category}</label>
+                            <div class="slider-container">
+                                <input type="range" class="growth-rate" data-category="${category}" min="0" max="25" step="0.5" value="${value * 100}" />
+                                <span class="slider-value">${(value * 100).toFixed(1)}%</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += html;
+            });
+        }
+
+        function getScalingFactor(category) {
+            const scaling = baseYearCosts[category].scaling;
+            if (scaling === 'deploymentScale') return assumptions.deploymentScale / 100;
+            if (scaling === 'dataScale') return (assumptions.dataReadiness / 100) * (assumptions.deploymentScale / 100);
+            if (scaling === 'staffing') {
+                const levels = { low: 0.7, medium: 1, high: 1.3 };
+                return levels[assumptions.staffingLevel] || 1;
+            }
+            return 1;
+        }
+
+        function calculateCosts() {
+            const costs = {};
+            const years = {};
+
+            Object.keys(baseYearCosts).forEach(category => {
+                const base = baseYearCosts[category].base;
+                const factor = getScalingFactor(category);
+                const year1Cost = base * factor;
+                const growthKey = getGrowthRateKey(category);
+                const growthRate = assumptions[growthKey];
+
+                costs[category] = {
+                    year1: year1Cost,
+                    year2: year1Cost * (1 + growthRate),
+                    year3: year1Cost * Math.pow(1 + growthRate, 2),
+                    year4: year1Cost * Math.pow(1 + growthRate, 3),
+                    year5: year1Cost * Math.pow(1 + growthRate, 4),
+                };
             });
 
-            const baseYearCosts = {
-                'Infrastructure & Compute': { base: 250000, factor: assumptions.deploymentScale / 100 },
-                'Software & Licensing': { base: 150000, factor: assumptions.deploymentScale / 100 },
-                'Data Management': { base: 120000, factor: (assumptions.dataReadiness / 100) * (assumptions.deploymentScale / 100) },
-                'Talent & Training': { base: 350000, factor: (assumptions.staffingLevel === 'high' ? 1.3 : assumptions.staffingLevel === 'medium' ? 1 : 0.7) },
-                'Integration & Development': { base: 200000, factor: assumptions.deploymentScale / 100 },
-                'Governance & Security': { base: 100000, factor: 1 }
-            };
+            for (let y = 1; y <= 5; y++) {
+                years[`year${y}`] = Object.values(costs).reduce((sum, cat) => sum + cat[`year${y}`], 0);
+            }
 
-            const growthRates = {
-                'Infrastructure & Compute': assumptions.infrastructureGrowthRate,
-                'Software & Licensing': assumptions.licenseGrowthRate,
-                'Data Management': assumptions.dataGrowthRate,
-                'Talent & Training': assumptions.talentGrowthRate,
-                'Integration & Development': assumptions.integrationGrowthRate,
-                'Governance & Security': assumptions.governanceGrowthRate
-            };
+            return { costs, years };
+        }
 
-            const calculateCosts = () => {
-                const costs = {};
-                const years = {};
-                
-                Object.keys(baseYearCosts).forEach(category => {
-                    const year1Cost = baseYearCosts[category].base * baseYearCosts[category].factor;
-                    costs[category] = {
-                        year1: year1Cost,
-                        year2: year1Cost * (1 + growthRates[category]),
-                        year3: year1Cost * Math.pow(1 + growthRates[category], 2),
-                        year4: year1Cost * Math.pow(1 + growthRates[category], 3),
-                        year5: year1Cost * Math.pow(1 + growthRates[category], 4),
-                    };
-                });
+        function formatCurrency(num) {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
+        }
 
-                for (let year = 1; year <= 5; year++) {
-                    years[`year${year}`] = Object.values(costs).reduce((sum, cat) => sum + cat[`year${year}`], 0);
-                }
-
-                return { costs, years };
-            };
-
+        function updateDisplay() {
             const { costs, years } = calculateCosts();
             const totalCost = Object.values(years).reduce((a, b) => a + b, 0);
 
-            const handleAssumptionChange = (key, value) => {
-                setAssumptions(prev => ({ ...prev, [key]: parseFloat(value) || value }));
-            };
-
-            const formatCurrency = (num) => {
-                return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
-            };
-
-            return (
-                <div className="container">
-                    <div className="header">
-                        <h1>AI Implementation Cost Model</h1>
-                        <p>5-year total cost of ownership calculator</p>
-                    </div>
-
-                    <div className="section">
-                        <div className="section-title">Deployment assumptions</div>
-                        <div className="grid">
-                            <div className="form-group">
-                                <label>Deployment scale: {assumptions.deploymentScale}%</label>
-                                <input type="range" min="25" max="200" value={assumptions.deploymentScale} onChange={(e) => handleAssumptionChange('deploymentScale', e.target.value)} />
-                                <small>Full deployment at 100%, pilot at 50%</small>
-                            </div>
-
-                            <div className="form-group">
-                                <label>Data readiness: {assumptions.dataReadiness}%</label>
-                                <input type="range" min="30" max="100" value={assumptions.dataReadiness} onChange={(e) => handleAssumptionChange('dataReadiness', e.target.value)} />
-                                <small>Quality & availability of source data</small>
-                            </div>
-
-                            <div className="form-group">
-                                <label>Staffing level</label>
-                                <select value={assumptions.staffingLevel} onChange={(e) => handleAssumptionChange('staffingLevel', e.target.value)}>
-                                    <option value="low">Low (minimal in-house)</option>
-                                    <option value="medium">Medium (balanced team)</option>
-                                    <option value="high">High (dedicated team)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e5e5e5' }}>
-                            <div className="section-title">Year-over-year growth rates</div>
-                            <div className="growth-rates-grid">
-                                {[
-                                    { key: 'infrastructureGrowthRate', label: 'Infrastructure' },
-                                    { key: 'licenseGrowthRate', label: 'Software & Licensing' },
-                                    { key: 'dataGrowthRate', label: 'Data Management' },
-                                    { key: 'talentGrowthRate', label: 'Talent & Training' },
-                                    { key: 'integrationGrowthRate', label: 'Integration' },
-                                    { key: 'governanceGrowthRate', label: 'Governance' }
-                                ].map(item => (
-                                    <div key={item.key}>
-                                        <div className="form-group">
-                                            <label>{item.label}</label>
-                                            <div className="slider-container">
-                                                <input type="range" min="0" max="25" step="0.5" value={Math.round(assumptions[item.key] * 100)} onChange={(e) => handleAssumptionChange(item.key, parseFloat(e.target.value) / 100)} />
-                                                <span className="slider-value">{(assumptions[item.key] * 100).toFixed(1)}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="section">
-                        <div className="metrics">
-                            <div className="metric-card">
-                                <div className="metric-label">Year 1 total</div>
-                                <div className="metric-value">{formatCurrency(years.year1)}</div>
-                            </div>
-                            <div className="metric-card">
-                                <div className="metric-label">Year 5 total</div>
-                                <div className="metric-value">{formatCurrency(years.year5)}</div>
-                            </div>
-                            <div className="metric-card">
-                                <div className="metric-label">5-year total</div>
-                                <div className="metric-value">{formatCurrency(totalCost)}</div>
-                            </div>
-                            <div className="metric-card">
-                                <div className="metric-label">Average annual</div>
-                                <div className="metric-value">{formatCurrency(totalCost / 5)}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="section">
-                        <div className="section-title">5-year cost breakdown by category</div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Category</th>
-                                    <th>Year 1</th>
-                                    <th>Year 2</th>
-                                    <th>Year 3</th>
-                                    <th>Year 4</th>
-                                    <th>Year 5</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {Object.keys(costs).map(category => {
-                                    const total = Object.values(costs[category]).reduce((a, b) => a + b, 0);
-                                    return (
-                                        <tr key={category}>
-                                            <td>{category}</td>
-                                            <td>{formatCurrency(costs[category].year1)}</td>
-                                            <td>{formatCurrency(costs[category].year2)}</td>
-                                            <td>{formatCurrency(costs[category].year3)}</td>
-                                            <td>{formatCurrency(costs[category].year4)}</td>
-                                            <td>{formatCurrency(costs[category].year5)}</td>
-                                            <td><strong>{formatCurrency(total)}</strong></td>
-                                        </tr>
-                                    );
-                                })}
-                                <tr className="total-row">
-                                    <td>Total</td>
-                                    <td>{formatCurrency(years.year1)}</td>
-                                    <td>{formatCurrency(years.year2)}</td>
-                                    <td>{formatCurrency(years.year3)}</td>
-                                    <td>{formatCurrency(years.year4)}</td>
-                                    <td>{formatCurrency(years.year5)}</td>
-                                    <td>{formatCurrency(totalCost)}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div className="section">
-                        <div className="notes">
-                            <strong>Important notes</strong>
-                            <ul>
-                                <li>These costs are estimates based on industry benchmarks and should be validated with actual vendor quotes</li>
-                                <li>Growth rates reflect typical scaling patterns; adjust based on your organization's specific roadmap</li>
-                                <li>Infrastructure costs scale with deployment size; data management includes tools, storage, and governance</li>
-                                <li>Talent costs include hiring, training, and external consulting; adjust staffing level to model different scenarios</li>
-                                <li>Final budget should include 15-20% contingency buffer for unexpected costs</li>
-                            </ul>
-                        </div>
-                    </div>
+            // Update metrics
+            const metricsHtml = `
+                <div class="metric-card">
+                    <div class="metric-label">Year 1 total</div>
+                    <div class="metric-value">${formatCurrency(years.year1)}</div>
                 </div>
-            );
+                <div class="metric-card">
+                    <div class="metric-label">Year 5 total</div>
+                    <div class="metric-value">${formatCurrency(years.year5)}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">5-year total</div>
+                    <div class="metric-value">${formatCurrency(totalCost)}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Average annual</div>
+                    <div class="metric-value">${formatCurrency(totalCost / 5)}</div>
+                </div>
+            `;
+            document.getElementById('metrics').innerHTML = metricsHtml;
+
+            // Update table
+            let tableHtml = '';
+            Object.keys(costs).forEach(category => {
+                const total = Object.values(costs[category]).reduce((a, b) => a + b, 0);
+                tableHtml += `
+                    <tr>
+                        <td>${category}</td>
+                        <td>${formatCurrency(costs[category].year1)}</td>
+                        <td>${formatCurrency(costs[category].year2)}</td>
+                        <td>${formatCurrency(costs[category].year3)}</td>
+                        <td>${formatCurrency(costs[category].year4)}</td>
+                        <td>${formatCurrency(costs[category].year5)}</td>
+                        <td><strong>${formatCurrency(total)}</strong></td>
+                    </tr>
+                `;
+            });
+            tableHtml += `
+                <tr class="total-row">
+                    <td>Total</td>
+                    <td>${formatCurrency(years.year1)}</td>
+                    <td>${formatCurrency(years.year2)}</td>
+                    <td>${formatCurrency(years.year3)}</td>
+                    <td>${formatCurrency(years.year4)}</td>
+                    <td>${formatCurrency(years.year5)}</td>
+                    <td>${formatCurrency(totalCost)}</td>
+                </tr>
+            `;
+            document.getElementById('costTableBody').innerHTML = tableHtml;
         }
 
-        ReactDOM.render(<CostCalculator />, document.getElementById('root'));
+        // Event listeners
+        document.getElementById('deploymentScale').addEventListener('input', (e) => {
+            assumptions.deploymentScale = parseFloat(e.target.value);
+            document.getElementById('deploymentScaleValue').textContent = assumptions.deploymentScale;
+            updateDisplay();
+        });
+
+        document.getElementById('dataReadiness').addEventListener('input', (e) => {
+            assumptions.dataReadiness = parseFloat(e.target.value);
+            document.getElementById('dataReadinessValue').textContent = assumptions.dataReadiness;
+            updateDisplay();
+        });
+
+        document.getElementById('staffingLevel').addEventListener('change', (e) => {
+            assumptions.staffingLevel = e.target.value;
+            updateDisplay();
+        });
+
+        document.addEventListener('input', (e) => {
+            if (e.target.classList.contains('growth-rate')) {
+                const category = e.target.dataset.category;
+                const key = getGrowthRateKey(category);
+                assumptions[key] = parseFloat(e.target.value) / 100;
+                e.target.nextElementSibling.textContent = (parseFloat(e.target.value)).toFixed(1) + '%';
+                updateDisplay();
+            }
+        });
+
+        // Initial render
+        renderGrowthRates();
+        updateDisplay();
     </script>
 </body>
 </html>
