@@ -1,0 +1,27 @@
+{
+  "name": "ai-cost-calculator",
+  "version": "1.0.0",
+  "description": "Interactive 5-year AI implementation cost modeling tool",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "npx http-server -p 8000 -c-1"
+  },
+  "keywords": [
+    "ai",
+    "cost-modeling",
+    "budget-planning",
+    "calculator",
+    "consulting"
+  ],
+  "author": "44consulting",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/ai-cost-calculator"
+  },
+  "homepage": "https://yourusername.github.io/ai-cost-calculator/",
+  "bugs": {
+    "url": "https://github.com/yourusername/ai-cost-calculator/issues"
+  }
+}
