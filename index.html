@@ -295,8 +295,8 @@
         function updateDisplay() {
             const { costs, years } = calculateCosts();
             const totalCost = Object.values(years).reduce((a, b) => a + b, 0);
-            const avgAnnual = (totalCost - costs.humanLaborBuild) / 5;
-            const costPerUser = assumptions.numberOfUsers > 0 ? avgAnnual / assumptions.numberOfUsers : 0;
+            const avgAnnualTotal = totalCost / 5;  // TRUE average annual cost (includes build cost spread across 5 years)
+            const costPerUser = assumptions.numberOfUsers > 0 ? avgAnnualTotal / assumptions.numberOfUsers : 0;
 
             const metricsHtml = `
                 <div class="metric-card">
@@ -312,8 +312,8 @@
                     <div class="metric-value">${formatCurrency(totalCost)}</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-label">Avg Annual (Ops)</div>
-                    <div class="metric-value">${formatCurrency(avgAnnual)}</div>
+                    <div class="metric-label">Avg Annual Cost</div>
+                    <div class="metric-value">${formatCurrency(avgAnnualTotal)}</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">Cost Per User/Year</div>
@@ -384,7 +384,7 @@
                     <td>${formatCurrency(years.year3)}</td>
                     <td>${formatCurrency(years.year4)}</td>
                     <td>${formatCurrency(years.year5)}</td>
-                    <td>${formatCurrency(Object.values(years).reduce((a,b) => a+b, 0))}</td>
+                    <td>${formatCurrency(totalCost)}</td>
                 </tr>
             `;
             document.getElementById('costTableBody').innerHTML = tableHtml;
