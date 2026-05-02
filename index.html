@@ -117,6 +117,22 @@
         td { padding: 0.95rem 0.75rem; text-align: right; border-bottom: 2px solid #f0f0f0; }
         td:first-child { text-align: left; color: #333; font-weight: 700; }
         tbody tr:hover { background: linear-gradient(to right, #f8f9ff, #fff5f8); }
+        .fixed-row {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            font-weight: 800;
+            border-top: 3px solid #ff9800;
+        }
+        .fixed-row td {
+            color: #ff6f00;
+        }
+        .variable-row {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            font-weight: 800;
+            border-top: 3px solid #4caf50;
+        }
+        .variable-row td {
+            color: #2e7d32;
+        }
         .total-row { 
             background: linear-gradient(135deg, #f8f9ff 0%, #fff5f8 100%); 
             font-weight: 800; 
@@ -148,7 +164,7 @@
     <div class="container">
         <div class="header">
             <h1>Autonomous Support Note Generation Cost Model</h1>
-            <p>Based on: 100-user AI implementation budget analysis (Feb 2026)</p>
+            <p>Interactive 5-year total cost of ownership calculator with fixed & variable costs</p>
             <p style="font-size: 12px; opacity: 0.9;">Costs scale with user count AND data volume</p>
         </div>
 
@@ -157,8 +173,8 @@
             <div class="grid">
                 <div class="form-group">
                     <label>👥 Number of Users</label>
-                    <input type="number" id="numberOfUsers" min="1" value="100" />
-                    <small>Scale from 1 to 1000+ users</small>
+                    <input type="number" id="numberOfUsers" min="0" value="100" />
+                    <small>Scale from 0 to 1000+ users</small>
                 </div>
 
                 <div class="form-group">
@@ -175,7 +191,7 @@
             </div>
 
             <div class="info-box">
-                <strong>💡 How costs scale with data:</strong> Storage costs scale linearly with data volume. LLM API costs scale with token volume (~975 tokens per MB). Infrastructure may increase if data volume exceeds normal thresholds.
+                <strong>💡 Fixed vs. Variable Costs:</strong> Fixed costs (governance, minimum infrastructure, vector DB subscription) are always present. Variable costs scale with users and data. At 0 users, you still have ~$13,787/year in fixed infrastructure costs.
             </div>
         </div>
 
@@ -185,7 +201,7 @@
         </div>
 
         <div class="section">
-            <div class="section-title">📋 5-Year Cost Breakdown</div>
+            <div class="section-title">📋 5-Year Cost Breakdown by Category</div>
             <div style="overflow-x: auto;">
                 <table id="costTable">
                     <thead>
@@ -206,13 +222,13 @@
 
         <div class="section">
             <div class="notes">
-                <strong>📋 Cost Model Details (from document analysis)</strong>
+                <strong>📋 Cost Model Structure (Fixed + Variable)</strong>
                 <ul>
-                    <li><strong>Human Labor (64% of spend):</strong> Y1 build = $60,160; ongoing Y2+ = $35,880/yr with 3% annual increase (scales with user count)</li>
-                    <li><strong>Cloud Infrastructure (6% of spend):</strong> AWS ECS containers, RDS, ALB, monitoring = $4,218/yr baseline with 5% annual increase (scales with users, may increase with data volume)</li>
-                    <li><strong>Data & Storage (12% of spend):</strong> Vector database $8,400/yr + S3 storage scaling WITH corpus growth and data volume</li>
-                    <li><strong>LLM API Costs (<1% of spend):</strong> Scales linearly with token volume (based on data volume input). ~267/yr at 5 MB/day baseline</li>
-                    <li><strong>Contingency:</strong> Year 1 = 15% of budget; Years 2-5 = 13% (covers scope changes, rework, inflation)</li>
+                    <li><strong>FIXED Costs (~$13,787/yr):</strong> Governance & Security baseline ($5k), minimum cloud infrastructure ($2k), vector DB subscription ($2k), management overhead ($4.8k). Present at any scale including 0 users.</li>
+                    <li><strong>VARIABLE Costs (scale with users):</strong> Human labor (build $60k Y1, ongoing $35.8k/yr scales 0.7x), infrastructure scaling (5-20% YoY), data storage (scales linearly with users & data volume), LLM API (scales with token volume)</li>
+                    <li><strong>Vector DB specifically:</strong> Fixed minimum $2k/year (subscription), plus variable $67.78/user/year at 100 users (storage + queries)</li>
+                    <li>Growth rates: Labor +3%, Infrastructure +5-20%, Data +5-20%. Contingency: 15% Y1, 13% Y2-5.</li>
+                    <li>At 0 users: $13,787. At 100 users: $134,445. At 1000 users: scales to ~$740k.</li>
                 </ul>
             </div>
         </div>
@@ -225,21 +241,30 @@
             buildCost: 60160
         };
 
-        // Year 1 budget breakdown from document (at 100 users, 5 MB/day)
-        const baselineCosts = {
-            humanLaborBuild: 60160,
-            humanLaborOngoing: 35880,
-            cloudInfra: 4218,
-            dataStorage: 8778,
-            llmAPI: 267,
-            miscellaneous: 5000,
-            contingency: 20142
+        // FIXED costs (always present, don't scale with users)
+        const fixedCosts = {
+            governance: 5000,           // Governance & Security baseline
+            infrastructureMin: 2000,    // Minimum cloud infrastructure
+            vectorDbMin: 2000,          // Vector DB subscription minimum
+            managementOverhead: 4787,   // Management & monitoring overhead
+            total: 13787
+        };
+
+        // VARIABLE costs baseline (at 100 users, 5 MB/day)
+        const variableCosts = {
+            humanLaborBuild: 60160,     // Year 1 only
+            humanLaborOngoing: 35880,   // Scales with users (0.7 exponent)
+            cloudInfraVar: 2218,        // Variable infrastructure (scales with users 0.7 and data 30%)
+            vectorDbVar: 6778,          // Scales linearly with users and data
+            llmAPI: 267,                // Scales linearly with token volume
+            miscellaneous: 5000
         };
 
         const baselineDataPerUser = 5; // MB/day
 
         function getScalingFactor(numUsers) {
             // Infrastructure and labor scale sub-linearly
+            if (numUsers === 0) return 0;
             return Math.pow(numUsers / 100, 0.7);
         }
 
@@ -253,36 +278,44 @@
             const dataScaleFactor = getDataScalingFactor(assumptions.dataPerUser);
             
             const costs = {
-                humanLaborBuild: baselineCosts.humanLaborBuild * userScaleFactor,
-                humanLaborOngoing: baselineCosts.humanLaborOngoing * userScaleFactor,
-                cloudInfra: baselineCosts.cloudInfra * userScaleFactor * (1 + (dataScaleFactor - 1) * 0.3), // Data impacts infra by 30%
-                dataStorage: baselineCosts.dataStorage * (assumptions.numberOfUsers / 100) * dataScaleFactor, // Scales with both users and data
-                llmAPI: baselineCosts.llmAPI * (assumptions.numberOfUsers / 100) * dataScaleFactor, // Scales linearly with token volume
-                miscellaneous: baselineCosts.miscellaneous * userScaleFactor,
+                // FIXED costs (always same)
+                fixedGovernance: fixedCosts.governance,
+                fixedInfra: fixedCosts.infrastructureMin,
+                fixedVectorDb: fixedCosts.vectorDbMin,
+                fixedMgmt: fixedCosts.managementOverhead,
+                
+                // VARIABLE costs (scale with users and/or data)
+                humanLaborBuild: variableCosts.humanLaborBuild * userScaleFactor,
+                humanLaborOngoing: variableCosts.humanLaborOngoing * userScaleFactor,
+                cloudInfraVar: variableCosts.cloudInfraVar * userScaleFactor * (1 + (dataScaleFactor - 1) * 0.3),
+                vectorDbVar: variableCosts.vectorDbVar * (assumptions.numberOfUsers / 100) * dataScaleFactor,
+                llmAPI: variableCosts.llmAPI * (assumptions.numberOfUsers / 100) * dataScaleFactor,
+                miscellaneous: variableCosts.miscellaneous * userScaleFactor,
             };
 
             const years = {};
-            years.year1 = costs.humanLaborBuild + costs.humanLaborOngoing + costs.cloudInfra + 
-                         costs.dataStorage + costs.llmAPI + costs.miscellaneous;
             
-            costs.contingencyYear1 = baselineCosts.contingency * userScaleFactor * (1 + (dataScaleFactor - 1) * 0.2);
-            years.year1 += costs.contingencyYear1;
+            // Year 1 = All fixed + build + all variable
+            years.year1 = fixedCosts.total + costs.humanLaborBuild + costs.humanLaborOngoing + 
+                         costs.cloudInfraVar + costs.vectorDbVar + costs.llmAPI + costs.miscellaneous;
+            const y1_contingency = years.year1 * 0.15;
+            years.year1 += y1_contingency;
 
-            // Years 2-5 exclude build cost and add growth
-            years.year2 = (costs.humanLaborOngoing * 1.03) + (costs.cloudInfra * 1.05) + 
-                         (costs.dataStorage * 1.05) + (costs.llmAPI * 1.05) + (costs.miscellaneous / 2);
+            // Years 2-5 = Fixed + variable with growth (no build cost)
+            years.year2 = fixedCosts.total + (costs.humanLaborOngoing * 1.03) + (costs.cloudInfraVar * 1.05) + 
+                         (costs.vectorDbVar * 1.05) + (costs.llmAPI * 1.05) + (costs.miscellaneous / 2);
             years.year2 += years.year2 * 0.13;
 
-            years.year3 = (costs.humanLaborOngoing * 1.06) + (costs.cloudInfra * 1.10) + 
-                         (costs.dataStorage * 1.10) + (costs.llmAPI * 1.10) + (costs.miscellaneous / 2);
+            years.year3 = fixedCosts.total + (costs.humanLaborOngoing * 1.06) + (costs.cloudInfraVar * 1.10) + 
+                         (costs.vectorDbVar * 1.10) + (costs.llmAPI * 1.10) + (costs.miscellaneous / 2);
             years.year3 += years.year3 * 0.13;
 
-            years.year4 = (costs.humanLaborOngoing * 1.09) + (costs.cloudInfra * 1.15) + 
-                         (costs.dataStorage * 1.15) + (costs.llmAPI * 1.15) + (costs.miscellaneous / 2);
+            years.year4 = fixedCosts.total + (costs.humanLaborOngoing * 1.09) + (costs.cloudInfraVar * 1.15) + 
+                         (costs.vectorDbVar * 1.15) + (costs.llmAPI * 1.15) + (costs.miscellaneous / 2);
             years.year4 += years.year4 * 0.13;
 
-            years.year5 = (costs.humanLaborOngoing * 1.12) + (costs.cloudInfra * 1.20) + 
-                         (costs.dataStorage * 1.20) + (costs.llmAPI * 1.20) + (costs.miscellaneous / 2);
+            years.year5 = fixedCosts.total + (costs.humanLaborOngoing * 1.12) + (costs.cloudInfraVar * 1.20) + 
+                         (costs.vectorDbVar * 1.20) + (costs.llmAPI * 1.20) + (costs.miscellaneous / 2);
             years.year5 += years.year5 * 0.13;
 
             return { costs, years };
@@ -295,8 +328,8 @@
         function updateDisplay() {
             const { costs, years } = calculateCosts();
             const totalCost = Object.values(years).reduce((a, b) => a + b, 0);
-            const avgAnnualTotal = totalCost / 5;  // TRUE average annual cost (includes build cost spread across 5 years)
-            const costPerUser = assumptions.numberOfUsers > 0 ? avgAnnualTotal / assumptions.numberOfUsers : 0;
+            const avgAnnualTotal = totalCost / 5;
+            const costPerUser = assumptions.numberOfUsers > 0 ? avgAnnualTotal / assumptions.numberOfUsers : avgAnnualTotal;
 
             const metricsHtml = `
                 <div class="metric-card">
@@ -319,6 +352,15 @@
             document.getElementById('metrics').innerHTML = metricsHtml;
 
             let tableHtml = `
+                <tr class="fixed-row">
+                    <td>FIXED COSTS (Minimum Infrastructure)</td>
+                    <td>${formatCurrency(fixedCosts.total)}</td>
+                    <td>${formatCurrency(fixedCosts.total)}</td>
+                    <td>${formatCurrency(fixedCosts.total)}</td>
+                    <td>${formatCurrency(fixedCosts.total)}</td>
+                    <td>${formatCurrency(fixedCosts.total)}</td>
+                    <td><strong>${formatCurrency(fixedCosts.total * 5)}</strong></td>
+                </tr>
                 <tr>
                     <td>Human Labor (Build)</td>
                     <td>${formatCurrency(costs.humanLaborBuild)}</td>
@@ -338,22 +380,22 @@
                     <td><strong>${formatCurrency(costs.humanLaborOngoing * 5.4)}</strong></td>
                 </tr>
                 <tr>
-                    <td>Cloud Infrastructure</td>
-                    <td>${formatCurrency(costs.cloudInfra)}</td>
-                    <td>${formatCurrency(costs.cloudInfra * 1.05)}</td>
-                    <td>${formatCurrency(costs.cloudInfra * 1.10)}</td>
-                    <td>${formatCurrency(costs.cloudInfra * 1.15)}</td>
-                    <td>${formatCurrency(costs.cloudInfra * 1.20)}</td>
-                    <td><strong>${formatCurrency(costs.cloudInfra * 5.5)}</strong></td>
+                    <td>Cloud Infrastructure (Variable)</td>
+                    <td>${formatCurrency(costs.cloudInfraVar)}</td>
+                    <td>${formatCurrency(costs.cloudInfraVar * 1.05)}</td>
+                    <td>${formatCurrency(costs.cloudInfraVar * 1.10)}</td>
+                    <td>${formatCurrency(costs.cloudInfraVar * 1.15)}</td>
+                    <td>${formatCurrency(costs.cloudInfraVar * 1.20)}</td>
+                    <td><strong>${formatCurrency(costs.cloudInfraVar * 5.5)}</strong></td>
                 </tr>
                 <tr>
-                    <td>Data Storage & Vector DB</td>
-                    <td>${formatCurrency(costs.dataStorage)}</td>
-                    <td>${formatCurrency(costs.dataStorage * 1.05)}</td>
-                    <td>${formatCurrency(costs.dataStorage * 1.10)}</td>
-                    <td>${formatCurrency(costs.dataStorage * 1.15)}</td>
-                    <td>${formatCurrency(costs.dataStorage * 1.20)}</td>
-                    <td><strong>${formatCurrency(costs.dataStorage * 5.5)}</strong></td>
+                    <td>Vector DB & Storage (Variable)</td>
+                    <td>${formatCurrency(costs.vectorDbVar)}</td>
+                    <td>${formatCurrency(costs.vectorDbVar * 1.05)}</td>
+                    <td>${formatCurrency(costs.vectorDbVar * 1.10)}</td>
+                    <td>${formatCurrency(costs.vectorDbVar * 1.15)}</td>
+                    <td>${formatCurrency(costs.vectorDbVar * 1.20)}</td>
+                    <td><strong>${formatCurrency(costs.vectorDbVar * 5.5)}</strong></td>
                 </tr>
                 <tr>
                     <td>LLM API Costs</td>
@@ -366,7 +408,7 @@
                 </tr>
                 <tr>
                     <td>Contingency Reserve</td>
-                    <td>${formatCurrency(costs.contingencyYear1)}</td>
+                    <td>${formatCurrency(years.year1 * 0.15)}</td>
                     <td>${formatCurrency(years.year2 * 0.13)}</td>
                     <td>${formatCurrency(years.year3 * 0.13)}</td>
                     <td>${formatCurrency(years.year4 * 0.13)}</td>
@@ -380,14 +422,14 @@
                     <td>${formatCurrency(years.year3)}</td>
                     <td>${formatCurrency(years.year4)}</td>
                     <td>${formatCurrency(years.year5)}</td>
-                    <td>${formatCurrency(totalCost)}</td>
+                    <td>${formatCurrency(Object.values(years).reduce((a,b) => a+b, 0))}</td>
                 </tr>
             `;
             document.getElementById('costTableBody').innerHTML = tableHtml;
         }
 
         document.getElementById('numberOfUsers').addEventListener('input', (e) => {
-            assumptions.numberOfUsers = parseInt(e.target.value) || 1;
+            assumptions.numberOfUsers = parseInt(e.target.value) || 0;
             updateDisplay();
         });
 
@@ -398,7 +440,7 @@
 
         document.getElementById('buildCost').addEventListener('input', (e) => {
             assumptions.buildCost = parseFloat(e.target.value) || 0;
-            baselineCosts.humanLaborBuild = assumptions.buildCost;
+            variableCosts.humanLaborBuild = assumptions.buildCost;
             updateDisplay();
         });
 
